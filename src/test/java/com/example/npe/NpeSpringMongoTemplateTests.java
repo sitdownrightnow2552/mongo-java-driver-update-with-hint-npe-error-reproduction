@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 @SpringBootTest
-class NpeApplicationTests {
+class NpeSpringMongoTemplateTests {
     private static final Document Index = new Document("ok", 1);
 
     @Autowired
