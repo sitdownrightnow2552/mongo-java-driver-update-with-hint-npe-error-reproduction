@@ -2,6 +2,8 @@ package com.example.npe;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.model.UpdateOptions;
+import org.bson.BsonDocument;
+import org.bson.BsonInt32;
 import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -47,5 +49,18 @@ class NpeNativeMongoClientTests {
         // fail with npe
         Assertions.assertThrows(NullPointerException.class, () -> collection.updateMany(query, update, options));
         Assertions.assertThrows(NullPointerException.class, () -> collection.updateOne(query, update, options));
+    }
+
+
+    // Workaround waiting for the fix
+    @Test
+    void updateWithHintWorkaroundUsingBsonDocumentShouldWork() {
+        final var collection = mongoClient.getDatabase("test").getCollection("test");
+        final var query = new Document("ok", true);
+        final var update = new Document("$set", new Document("update_ok", true));
+        // use BsonDocument to specify index
+        final var options = new UpdateOptions().hint(new BsonDocument("ok", new BsonInt32(1)));
+        collection.updateMany(query, update, options);
+        collection.updateOne(query, update, options);
     }
 }
